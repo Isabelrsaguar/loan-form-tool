@@ -75,6 +75,18 @@
 </header>
 
 <main>
+  <section class="card" id="gate">
+    <h2>Enter your access code</h2>
+    <p class="note" style="margin-top:0">You'll find the access code in the instructions that came with your Etsy purchase.</p>
+    <form id="gateForm" autocomplete="off">
+      <input id="code" type="password" inputmode="numeric" aria-label="Access code" placeholder="Access code"
+        style="font:16px Lato,Arial,sans-serif;padding:12px 14px;border:1px solid var(--line);border-radius:10px;width:100%;max-width:260px">
+      <br><button type="submit">Continue</button>
+      <div class="status err" id="gateMsg" role="alert"></div>
+    </form>
+  </section>
+
+  <div id="app" hidden>
   <section class="card">
     <h2>Before you start</h2>
     <ol class="steps">
@@ -109,6 +121,7 @@
       <li>This form collects sensitive information like Social Security numbers. Ask clients to return it securely, for example through an encrypted email or a secure upload link.</li>
     </ul>
   </section>
+  </div>
 </main>
 
 <footer>Loan Inquiry Form tool</footer>
@@ -116,6 +129,36 @@
 <script src="vendor/pdf-lib.min.js"></script>
 <script src="fillable.js"></script>
 <script>
+// Access gate: buyers get the code with their Etsy download. (Light protection only.)
+(function () {
+  const CODE_HASH = "d6f0c71ef0c88e45e4b3a2118fcb83b0def392d759c901e9d755d0e879028727";
+  const KEY = "loanFormAccess";
+  const gate = document.getElementById("gate");
+  const app = document.getElementById("app");
+  const msg = document.getElementById("gateMsg");
+
+  function unlock() { gate.hidden = true; app.hidden = false; }
+
+  async function sha256(text) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  try { if (localStorage.getItem(KEY) === CODE_HASH) unlock(); } catch (e) {}
+
+  document.getElementById("gateForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const h = await sha256(document.getElementById("code").value.trim());
+    if (h === CODE_HASH) {
+      try { localStorage.setItem(KEY, h); } catch (e) {}
+      msg.textContent = "";
+      unlock();
+    } else {
+      msg.textContent = "That code isn't right. Check the instructions from your Etsy purchase.";
+    }
+  });
+})();
+
 (function () {
   const input = document.getElementById("file");
   const drop = document.getElementById("drop");
