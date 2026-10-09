@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Make Your Loan Inquiry Form Fillable</title>
+<meta name="description" content="Turn your branded Loan Inquiry Form from Canva into a fillable PDF your clients can type into.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blush: #e8c8cc;
+    --blush-deep: #c9959c;
+    --ink: #2b2b2b;
+    --muted: #6b6466;
+    --bg: #fbf7f7;
+    --card: #ffffff;
+    --line: #ecdfe0;
+    --ok: #3d7a57;
+    --err: #a33a3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: Lato, "Segoe UI", Arial, sans-serif; line-height: 1.55;
+  }
+  header {
+    background: var(--blush); text-align: center; padding: 40px 16px 32px;
+  }
+  header h1 {
+    font-family: "Great Vibes", cursive; font-weight: 400; color: #fff;
+    font-size: clamp(44px, 9vw, 72px); margin: 0; line-height: 1.1;
+    text-shadow: 0 1px 2px rgba(120, 70, 80, .25);
+  }
+  header p { margin: 8px auto 0; max-width: 560px; color: #5a3f44; font-size: 17px; }
+  main { max-width: 720px; margin: 0 auto; padding: 28px 16px 56px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 24px; margin-bottom: 22px; box-shadow: 0 2px 10px rgba(120, 70, 80, .05);
+  }
+  h2 { font-size: 19px; margin: 0 0 12px; }
+  ol.steps { margin: 0; padding-left: 22px; }
+  ol.steps li { margin: 6px 0; }
+  .drop {
+    border: 2px dashed var(--blush-deep); border-radius: 12px; background: #fdf3f4;
+    padding: 34px 16px; text-align: center; cursor: pointer; transition: background .15s;
+  }
+  .drop:hover, .drop.over { background: #f9e6e8; }
+  .drop strong { display: block; font-size: 18px; margin-bottom: 4px; }
+  .drop span { color: var(--muted); font-size: 15px; }
+  .drop:focus-visible { outline: 3px solid var(--blush-deep); outline-offset: 3px; }
+  #file { display: none; }
+  .filename { margin-top: 12px; font-size: 15px; color: var(--muted); min-height: 1.4em; word-break: break-all; }
+  button, .btn {
+    display: inline-block; border: 0; border-radius: 999px; background: var(--ink); color: #fff;
+    font: 700 16px Lato, Arial, sans-serif; padding: 14px 28px; cursor: pointer; text-decoration: none;
+    margin-top: 16px;
+  }
+  button:disabled { background: #b9b0b2; cursor: not-allowed; }
+  .btn.download { background: var(--ok); }
+  .status { margin-top: 16px; font-size: 15px; min-height: 1.4em; }
+  .status.ok { color: var(--ok); }
+  .status.err { color: var(--err); }
+  .note { font-size: 14px; color: var(--muted); }
+  .tips li { margin: 4px 0; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; padding: 0 16px 32px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Make It Fillable</h1>
+  <p>Turn your branded Loan Inquiry Form into a PDF your clients can type into, check off and sign.</p>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Before you start</h2>
+    <ol class="steps">
+      <li>Add your branding in Canva: your name, photo, contact info and headings.</li>
+      <li>In Canva, click <b>Share → Download</b>, choose <b>PDF Standard</b>, include <b>both pages</b>, and download.</li>
+      <li>Upload that PDF below and click <b>Make Fillable</b>.</li>
+      <li>Email the new PDF to your client. They can fill it out in any free PDF reader.</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>Upload your form</h2>
+    <label class="drop" id="drop" for="file" tabindex="0">
+      <strong>Click to choose your PDF</strong>
+      <span>or drag and drop it here</span>
+    </label>
+    <input type="file" id="file" accept="application/pdf,.pdf">
+    <div class="filename" id="filename"></div>
+    <button id="go" disabled>Make Fillable</button>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+    <div id="result"></div>
+    <p class="note">Your form stays private: it's converted right here in your browser and is never uploaded anywhere.</p>
+  </section>
+
+  <section class="card">
+    <h2>Tips</h2>
+    <ul class="tips">
+      <li>Keep the form lines and checkboxes where they are. Change only your branding and headings.</li>
+      <li>Upload the PDF straight from Canva. Don't print it to PDF or run it through other tools first.</li>
+      <li>Before sending, open your fillable PDF and try typing in a box to make sure it looks right.</li>
+      <li>Your clients can use Adobe Acrobat Reader (free), Preview on Mac, or a web browser.</li>
+      <li>This form collects sensitive information like Social Security numbers. Ask clients to return it securely, for example through an encrypted email or a secure upload link.</li>
+    </ul>
+  </section>
+</main>
+
+<footer>Loan Inquiry Form tool</footer>
+
+<script src="vendor/pdf-lib.min.js"></script>
+<script src="fillable.js"></script>
+<script>
+(function () {
+  const input = document.getElementById("file");
+  const drop = document.getElementById("drop");
+  const go = document.getElementById("go");
+  const nameEl = document.getElementById("filename");
+  const status = document.getElementById("status");
+  const result = document.getElementById("result");
+  let file = null;
+  let lastUrl = null;
+
+  function setStatus(msg, kind) {
+    status.textContent = msg;
+    status.className = "status" + (kind ? " " + kind : "");
+  }
+
+  function pick(f) {
+    result.innerHTML = "";
+    if (!f) return;
+    if (!/\.pdf$/i.test(f.name) && f.type !== "application/pdf") {
+      file = null; go.disabled = true; nameEl.textContent = "";
+      setStatus("That isn't a PDF. Please choose the PDF you downloaded from Canva.", "err");
+      return;
+    }
+    file = f;
+    nameEl.textContent = "Selected: " + f.name;
+    go.disabled = false;
+    setStatus("");
+  }
+
+  input.addEventListener("change", () => pick(input.files[0]));
+  drop.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); }
+  });
+  ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => {
+    e.preventDefault(); drop.classList.add("over");
+  }));
+  ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => {
+    e.preventDefault(); drop.classList.remove("over");
+  }));
+  drop.addEventListener("drop", (e) => pick(e.dataTransfer.files[0]));
+
+  go.addEventListener("click", async () => {
+    if (!file) return;
+    go.disabled = true;
+    result.innerHTML = "";
+    setStatus("Working on it…");
+    try {
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const out = await window.makeFillable(window.PDFLib, bytes);
+      if (lastUrl) URL.revokeObjectURL(lastUrl);
+      lastUrl = URL.createObjectURL(new Blob([out.bytes], { type: "application/pdf" }));
+      const base = file.name.replace(/\.pdf$/i, "");
+      const a = document.createElement("a");
+      a.className = "btn download";
+      a.href = lastUrl;
+      a.download = base + " - Fillable.pdf";
+      a.textContent = "Download fillable PDF";
+      result.appendChild(a);
+      setStatus(`Done! Added ${out.fieldCount} fill-in fields across ${out.pageCount} pages.`, "ok");
+      a.click();
+    } catch (err) {
+      console.error(err);
+      setStatus(err && err.message && !/^[A-Z][a-zA-Z]+Error/.test(err.message)
+        ? err.message
+        : "Sorry, this file couldn't be converted. Make sure it's the PDF downloaded straight from Canva.", "err");
+    } finally {
+      go.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
